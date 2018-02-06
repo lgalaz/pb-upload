@@ -56,48 +56,37 @@
 
         methods: {
             editSave() {
-                this.edit = false
-                let oldFile = this.files[0]
-                let arr = new Uint8Array(binStr.length)
-                for (let i = 0; i < binStr.length; i++) {
-                    arr[i] = binStr.charCodeAt(i)
-                }
-                let file = new File([arr], oldFile.name, {
-                    type: oldFile.type
-                })
+                this.edit = false;
+            },
 
-                this.$refs.upload.update(oldFile.id, {
-                    file,
-                    type: file.type,
-                    size: file.size,
-                    active: true,
-                })
-            },
             alert(message) {
-                alert(message)
+                alert(message);
             },
+
             inputFile(newFile, oldFile, prevent) {
                 if (newFile && !oldFile) {
                     this.$nextTick(function () {
-                        this.edit = true
+                        this.edit = true;
                     })
                 }
                 if (!newFile && oldFile) {
-                    this.edit = false
+                    this.edit = false;
                 }
             },
+
             inputFilter(newFile, oldFile, prevent) {
                 if (newFile && !oldFile) {
                     if (!/\.(gif|jpg|jpeg|png|webp)$/i.test(newFile.name)) {
-                        this.alert('Your choice is not a picture')
-                        return prevent()
+                        this.alert('Your choice is not a picture');
+                        return prevent();
                     }
                 }
+
                 if (newFile && (!oldFile || newFile.file !== oldFile.file)) {
-                    newFile.url = ''
-                    let URL = window.URL || window.webkitURL
+                    newFile.url = '';
+                    let URL = window.URL || window.webkitURL;
                     if (URL && URL.createObjectURL) {
-                        newFile.url = URL.createObjectURL(newFile.file)
+                        newFile.url = URL.createObjectURL(newFile.file);
                     }
                 }
             }
