@@ -1,5 +1,6 @@
 @import "variables";
 @import "fonts";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
 html, body { height: 100% }
 body { padding-bottom: 100px; font-family: "Noway"; }
@@ -15,6 +16,15 @@ body { padding-bottom: 100px; font-family: "Noway"; }
     flex-direction: column;
 }
 
+.btn {
+    background-color: $play-gray;
+    height: 30px;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0px 10px;
+}
+
 .play-green {
     background-color: $play-green;
 }
@@ -25,15 +35,6 @@ body { padding-bottom: 100px; font-family: "Noway"; }
 
 .alert-red {
     background-color: $alert-red;
-}
-
-.btn {
-    background-color: $play-gray;
-    height: 30px;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0px 10px;
 }
 
 .btn:hover {
@@ -51,6 +52,14 @@ body { padding-bottom: 100px; font-family: "Noway"; }
     &.alert-red {
         background-color: lighten($alert-red, 10%);
     }
+}
+
+.medium-width {
+    width: 80%;
+}
+
+.text-center {
+    text-align: center;
 }
 
 .mb {
