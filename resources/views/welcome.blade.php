@@ -14,7 +14,7 @@
     <title>PB Uploader</title>
 </head>
 
-<body class="flex flex-center">
+<body>
     <div id="app">
         <uploader></uploader>
     </div>

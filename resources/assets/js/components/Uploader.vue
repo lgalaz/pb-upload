@@ -1,67 +1,79 @@
 <template>
-    <div id="dropzone">
-        <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
-            <h3>Suelta la imágen para cargar.</h3>
-        </div>
-        <div class="content flex flex-center flex-columns" v-show="! files.length && ! edit">
-            <div class="mb">
-                    Arrastra ó
+    <div>
+        <div id="dropzone">
+            <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
+                <h3>Suelta la imágen para cargar.</h3>
             </div>
- 
-            <vue-file-upload 
-                extensions="gif,jpg,jpeg,png,webp"
-                accept="image/png,image/gif,image/jpeg,image/webp"
-                name="image"
-                post-action="/upload/post"
-                :drop="!edit"
-                v-model="files"
-                @input-filter="inputFilter"
-                @input-file="inputFile"
-                ref="upload">
+            <div class="content flex flex-center flex-columns" v-show="! files.length && ! edit">
+                <div class="mb">
+                        Arrastra ó
+                </div>
+    
+                <vue-file-upload 
+                    extensions="gif,jpg,jpeg,png,webp"
+                    accept="image/png,image/gif,image/jpeg,image/webp"
+                    name="image"
+                    post-action="/upload/post"
+                    :drop="!edit"
+                    v-model="files"
+                    @input-filter="inputFilter"
+                    @input-file="inputFile"
+                    ref="upload">
 
-                <div class="btn play-gray">
-                    Selecciona tu imágen
-                </div>
-            </vue-file-upload>
-        </div>
-  
-        <div class="content flex flex-center flex-columns" v-if="files.length && editForm">
-            <form class="medium-width">
-                <div class="form-group">
-                    <label for="description">Agregar Descripción</label>
-                    <textarea class="form-control" id="description" aria-describedby="descriptionHelp" placeholder="bla bla bla..."></textarea>
-                    <small id="descriptionHelp" class="form-text text-muted">Acerca de la imágen.</small>
-                </div>
-            </form>
-            <div class="flex flex-center">
-                <div class="btn play-green" @click="editSave">
-                    Aceptar
-                </div>
-                <div class="btn play-gray" @click="clearDescription">
-                    Borrar
-                </div>
-            </div>       
-        </div>     
-
-        <div class="upload-preview" v-show="files.length && edit">
-            <div class="uploaded-image" v-if="files.length">
-                <img ref="editImage" :src="files[0].url" />
-            </div>
-            <template v-if="! description">
-                <div class="options flex flex-center">
-                    <div class="option" @click.prevent="showEditForm">Agregar Descripción</div> |
-                    <div class="option" @click.prevent="$refs.upload.clear">Eliminar</div>
-                </div>
-            </template>
-            <template v-else>
-                <div class="options flex flex-center flex-columns backdrop">
-                    <div class="mb medium-width text-center" v-text="description"></div>
-                    <div class="flex">
-                        <div class="btn play-green" @click.prevent="showEditForm">Editar</div>
-                        <div class="btn alert-red" @click.prevent="$refs.upload.clear">Eliminar</div>
+                    <div class="btn play-gray">
+                        Selecciona tu imágen
                     </div>
+                </vue-file-upload>
+            </div>
+    
+            <div class="content flex flex-center flex-columns" v-if="files.length && editForm">
+                <form class="medium-width">
+                    <div class="form-group">
+                        <label for="description">Agregar Descripción</label>
+                        <textarea class="form-control" id="description" aria-describedby="descriptionHelp" placeholder="bla bla bla..."></textarea>
+                        <small id="descriptionHelp" class="form-text text-muted">Acerca de la imágen.</small>
+                    </div>
+                </form>
+                <div class="flex flex-center">
+                    <div class="btn play-green" @click="editSave">
+                        Aceptar
+                    </div>
+                    <div class="btn play-gray" @click="clearDescription">
+                        Borrar
+                    </div>
+                </div>       
+            </div>     
+
+            <div class="upload-preview" v-show="files.length && edit">
+                <div class="uploaded-image" v-if="files.length">
+                    <img ref="editImage" :src="files[0].url" />
                 </div>
-            </template>
+                <template v-if="! description">
+                    <div class="options flex flex-center">
+                        <div class="option" @click.prevent="showEditForm">Agregar Descripción</div> |
+                        <div class="option" @click.prevent="cancel">Cancelar</div>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="options flex flex-center flex-columns backdrop">
+                        <div class="mb medium-width text-center" v-text="description"></div>
+                        <div class="gray-bg flex">
+                            <div class="btn play-green" @click.prevent="addImage">Agregar</div>
+                            <div class="btn play-gray" @click.prevent="showEditForm">Editar</div>
+                            <div class="btn alert-red" @click.prevent="cancel">Cancelar</div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+        
+        <div>
+            <div class="wrapper">
+                <div class="gallery-image"v-for="(file, index) in savedFiles" :key="file.id">
+                    <img :src="file.url" />
+                    <div class="description" v-text="file.description"></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -73,6 +85,7 @@
         data() {
             return {
                 files: [],
+                savedFiles: [],
                 edit: false,
                 editForm: false,
                 description: ''
@@ -84,6 +97,19 @@
         },
 
         methods: {
+            addImage() {
+                this.files[0].description = this.description;
+                this.savedFiles.push(this.files[0]);
+                this.cancel();
+            },
+            
+            cancel() {
+                this.$refs.upload.clear();
+                this.description = '';
+                this.edit = false;
+                this.editForm = false;
+            },
+
             showEditForm() {
                 this.edit = false;
                 this.editForm = true;
@@ -140,6 +166,7 @@
         padding: 20px;
         height: 227px;
         width: 406px;
+        margin: 20px auto;
 
         .uploaded-image,
         .uploaded-image img{
@@ -209,5 +236,21 @@
         }
     }
 
+        .wrapper {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 10px;
+        grid-auto-rows: minmax(100px, auto);
 
+        .gallery-image, 
+        .description {
+            margin:0 auto;
+            max-width: 128px;
+        }
+
+        img {
+            max-height: 128px;
+            max-width: 128px;
+        }
+    }
 </style>
